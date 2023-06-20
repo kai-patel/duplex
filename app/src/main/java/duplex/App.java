@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        URL fxmlLocation = new File("./src/main/resources/duplex.fxml").getCanonicalFile().toURI().toURL();
+        URL fxmlLocation = new File("./src/main/java/duplex/duplex.fxml").getCanonicalFile().toURI().toURL();
         System.out.println(fxmlLocation);
         loader.setLocation(fxmlLocation);
         VBox vbox = loader.<VBox>load();
