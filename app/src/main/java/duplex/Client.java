@@ -6,18 +6,24 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Client {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
 
+    public ObservableList<String> messages;
+
     public Client(String host, int port) {
+        this.messages = FXCollections.observableArrayList();
         try {
             this.socket = new Socket(host, port);
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream());
         } catch (IOException e) {
-            System.err.println("Coulc not create Client");
+            System.err.println("Could not create Client");
             e.printStackTrace();
         }
     }
@@ -41,6 +47,11 @@ public class Client {
         }
     }
 
+    public void sendMessage(String s) {
+        this.out.write(s + '\n');
+        this.out.flush();
+    }
+
     public void getMessages() {
         new Thread(new Runnable() {
             @Override
@@ -49,6 +60,7 @@ public class Client {
                     try {
                         String message = in.readLine();
                         System.out.println(message);
+                        messages.add(message);
                     } catch (IOException e) {
                         System.err.println("Could not run Client");
                         e.printStackTrace();

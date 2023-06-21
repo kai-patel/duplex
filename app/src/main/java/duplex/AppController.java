@@ -32,6 +32,8 @@ public class AppController {
         System.out.println(newMessage);
         messages.add(newMessage);
         messageHistory.scrollTo(messages.size());
+
+        this.client.sendMessage(newMessage);
         textArea.clear();
     }
 
@@ -51,7 +53,7 @@ public class AppController {
     public void initialize() {
         this.client = new Client("localhost", 585);
         this.client.getMessages();
-        this.messages = FXCollections.observableArrayList("this", "is", "a", "test");
+        this.messages = this.client.messages;
         this.users = FXCollections.observableArrayList("John", "Adam", "Steve");
         this.messageHistory.setItems(messages);
         this.userList.setItems(users);
