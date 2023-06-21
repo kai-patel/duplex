@@ -29,8 +29,10 @@ public class ClientHandler implements Runnable {
 
     private void broadcastMessage(String message) {
         for (ClientHandler client : clients) {
-            client.out.write(message + '\n');
-            client.out.flush();
+            if (this != client) {
+                client.out.write(message + '\n');
+                client.out.flush();
+            }
         }
     }
 
