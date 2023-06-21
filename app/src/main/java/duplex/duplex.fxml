@@ -47,7 +47,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="duplex.AppController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -121,10 +121,10 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextArea prefHeight="200.0" prefWidth="200.0" />
+                              <TextArea fx:id="textArea" onKeyPressed="#textAreaShortcut" prefHeight="200.0" prefWidth="200.0" promptText="Send a message..." />
                               <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                                  <center>
-                                    <Button mnemonicParsing="false" prefHeight="132.0" prefWidth="250.0" text="Send" BorderPane.alignment="CENTER" />
+                                    <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendClicked" prefHeight="132.0" prefWidth="250.0" text="Send" BorderPane.alignment="CENTER" />
                                  </center>
                               </BorderPane>
                            </children>
