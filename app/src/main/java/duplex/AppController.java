@@ -11,8 +11,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class AppController {
-    public ObservableList<String> messages;
-    public ObservableList<String> users;
+    private ObservableList<String> messages;
+    private ObservableList<String> users;
+
+    private Client client;
 
     public TextArea textArea;
     public Button sendButton;
@@ -47,9 +49,10 @@ public class AppController {
 
     @FXML
     public void initialize() {
-        messages = FXCollections.observableArrayList("this", "is", "a", "test");
-        users = FXCollections.observableArrayList("John", "Adam", "Steve");
-        messageHistory.setItems(messages);
-        userList.setItems(users);
+        this.client = new Client("localhost", 585);
+        this.messages = FXCollections.observableArrayList("this", "is", "a", "test");
+        this.users = FXCollections.observableArrayList("John", "Adam", "Steve");
+        this.messageHistory.setItems(messages);
+        this.userList.setItems(users);
     }
 }
