@@ -12,6 +12,7 @@ public class Server {
             this.serverSocket = new ServerSocket(port);
             this.start();
         } catch (IOException e) {
+            System.err.println("Could not create server");
             e.printStackTrace();
         }
     }
@@ -32,6 +33,7 @@ public class Server {
                 this.serverSocket.close();
             }
         } catch (IOException e) {
+            System.err.println("Could not close server socket");
             e.printStackTrace();
         }
     }

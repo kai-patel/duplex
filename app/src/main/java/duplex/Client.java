@@ -17,6 +17,7 @@ public class Client {
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream());
         } catch (IOException e) {
+            System.err.println("Coulc not create Client");
             e.printStackTrace();
         }
     }
@@ -35,6 +36,7 @@ public class Client {
                 this.out.close();
             }
         } catch (IOException e) {
+            System.err.println("Could not close Client");
             e.printStackTrace();
         }
     }
@@ -48,8 +50,10 @@ public class Client {
                         String message = in.readLine();
                         System.out.println(message);
                     } catch (IOException e) {
-                        close();
+                        System.err.println("Could not run Client");
                         e.printStackTrace();
+                        close();
+                        break;
                     }
                 }
             }

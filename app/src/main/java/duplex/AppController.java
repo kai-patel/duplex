@@ -50,6 +50,7 @@ public class AppController {
     @FXML
     public void initialize() {
         this.client = new Client("localhost", 585);
+        this.client.getMessages();
         this.messages = FXCollections.observableArrayList("this", "is", "a", "test");
         this.users = FXCollections.observableArrayList("John", "Adam", "Steve");
         this.messageHistory.setItems(messages);

@@ -19,6 +19,7 @@ public class ClientHandler implements Runnable {
             this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
         } catch (IOException e) {
+            System.err.println("Could not create ClientHandler");
             e.printStackTrace();
         }
 
@@ -28,7 +29,7 @@ public class ClientHandler implements Runnable {
 
     private void broadcastMessage(String message) {
         for (ClientHandler client : clients) {
-            client.out.write(message);
+            client.out.write(message + '\n');
             client.out.flush();
         }
     }
@@ -40,16 +41,21 @@ public class ClientHandler implements Runnable {
             if (this.socket != null) {
                 this.socket.close();
             }
+        } catch (IOException e) {
+            System.err.println("Could not close ClientHandler socket");
+        }
 
+        try {
             if (this.in != null) {
                 this.in.close();
             }
 
-            if (this.out != null) {
-                this.out.close();
-            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not close ClientHandler reader");
+        }
+
+        if (this.out != null) {
+            this.out.close();
         }
     }
 
@@ -60,8 +66,10 @@ public class ClientHandler implements Runnable {
                 String message = in.readLine();
                 broadcastMessage(message);
             } catch (IOException e) {
-                close();
+                System.err.println("Could not run ClientHandler");
                 e.printStackTrace();
+                close();
+                break;
             }
         }
     }
