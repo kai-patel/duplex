@@ -1,9 +1,8 @@
 package duplex;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javafx.collections.FXCollections;
@@ -11,8 +10,8 @@ import javafx.collections.ObservableList;
 
 public class Client {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     public ObservableList<String> messages;
 
@@ -20,11 +19,10 @@ public class Client {
         this.messages = FXCollections.observableArrayList();
         try {
             this.socket = new Socket(host, port);
-            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.out = new PrintWriter(this.socket.getOutputStream());
+            this.in = new ObjectInputStream(this.socket.getInputStream());
+            this.out = new ObjectOutputStream(this.socket.getOutputStream());
         } catch (IOException e) {
             System.err.println("Could not create Client");
-            e.printStackTrace();
         }
     }
 
@@ -48,8 +46,12 @@ public class Client {
     }
 
     public void sendMessage(String s) {
-        this.out.write(s + '\n');
-        this.out.flush();
+        try {
+            this.out.writeObject(new Message("test", s));
+            this.out.flush();
+        } catch (IOException e) {
+            System.err.println("Client could not writeObject");
+        }
     }
 
     public void getMessages() {
@@ -58,12 +60,15 @@ public class Client {
             public void run() {
                 while (socket.isConnected()) {
                     try {
-                        String message = in.readLine();
-                        System.out.println(message);
-                        messages.add(message);
+                        Message message = (Message) in.readObject();
+                        System.out.println(message.toString());
+                        messages.add(message.toString());
                     } catch (IOException e) {
                         System.err.println("Could not run Client");
-                        e.printStackTrace();
+                        close();
+                        break;
+                    } catch (ClassNotFoundException e) {
+                        System.err.println("Could not cast read Object to Message in Client");
                         close();
                         break;
                     }
