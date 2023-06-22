@@ -37,4 +37,9 @@ public class Message implements Serializable {
     public void setSender(String sender) {
         this.sender = sender;
     }
+
+    @Override
+    public String toString() {
+        return this.getSender() + ": " + this.getContent() + '\n';
+    }
 }
