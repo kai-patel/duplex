@@ -15,8 +15,8 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket) {
         this.socket = socket;
         try {
-            this.in = new ObjectInputStream(this.socket.getInputStream());
             this.out = new ObjectOutputStream(this.socket.getOutputStream());
+            this.in = new ObjectInputStream(this.socket.getInputStream());
         } catch (IOException e) {
             System.err.println("Could not create ClientHandler");
             e.printStackTrace();
