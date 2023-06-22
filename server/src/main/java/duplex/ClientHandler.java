@@ -3,35 +3,40 @@ package duplex;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
     public static ArrayList<ClientHandler> clients = new ArrayList<>();
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
         try {
-            this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.out = new PrintWriter(this.socket.getOutputStream(), true);
+            this.in = new ObjectInputStream(this.socket.getInputStream());
+            this.out = new ObjectOutputStream(this.socket.getOutputStream());
         } catch (IOException e) {
             System.err.println("Could not create ClientHandler");
             e.printStackTrace();
         }
 
         clients.add(this);
-        broadcastMessage("A user has entered the chat");
+        broadcastMessage(new Message("Server", "A user has entered the chat"));
     }
 
-    private void broadcastMessage(String message) {
+    private void broadcastMessage(Message message) {
         for (ClientHandler client : clients) {
             if (this != client) {
-                client.out.write(message + '\n');
-                client.out.flush();
+                try {
+                    client.out.writeObject(message);
+                    client.out.flush();
+                } catch (IOException e) {
+                    System.err.println("Could not write message to client");
+                }
             }
         }
     }
@@ -39,36 +44,47 @@ public class ClientHandler implements Runnable {
     public void close() {
         clients.remove(this);
 
-        try {
-            if (this.socket != null) {
+        if (this.socket != null) {
+            try {
                 this.socket.close();
+            } catch (IOException e) {
+                System.err.println("Could not close ClientHandler socket");
             }
-        } catch (IOException e) {
-            System.err.println("Could not close ClientHandler socket");
         }
 
-        try {
-            if (this.in != null) {
+        if (this.in != null) {
+            try {
                 this.in.close();
             }
 
-        } catch (IOException e) {
-            System.err.println("Could not close ClientHandler reader");
+            catch (IOException e) {
+                System.err.println("Could not close ClientHandler reader");
+            }
         }
 
         if (this.out != null) {
-            this.out.close();
+            try {
+                this.out.close();
+            } catch (IOException e) {
+                System.err.println("Could not close ClientHandler writer");
+            }
         }
+
     }
 
     @Override
     public void run() {
         while (socket.isConnected()) {
             try {
-                String message = in.readLine();
+                Message message = (Message) in.readObject();
                 broadcastMessage(message);
             } catch (IOException e) {
-                System.err.println("Could not run ClientHandler");
+                System.err.println("Could not readObject in ClientHandler");
+                e.printStackTrace();
+                close();
+                break;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Could not cast read Object in ClientHandler");
                 e.printStackTrace();
                 close();
                 break;
