@@ -28,13 +28,11 @@ public class ClientHandler implements Runnable {
 
     private void broadcastMessage(Message message) {
         for (ClientHandler client : clients) {
-            if (this != client) {
-                try {
-                    client.out.writeObject(message);
-                    client.out.flush();
-                } catch (IOException e) {
-                    System.err.println("Could not write message to client");
-                }
+            try {
+                client.out.writeObject(message);
+                client.out.flush();
+            } catch (IOException e) {
+                System.err.println("Could not write message to client");
             }
         }
     }
