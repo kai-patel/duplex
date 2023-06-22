@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -68,7 +69,12 @@ public class Client {
                         System.out.println("Reading object");
                         Message message = (Message) in.readObject();
                         System.out.println(message.toString());
-                        messages.add(message.toString());
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                messages.add(message.toString());
+                            }
+                        });
                     } catch (IOException e) {
                         System.err.println("Could not run Client");
                         close();
