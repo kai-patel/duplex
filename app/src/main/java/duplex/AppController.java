@@ -29,11 +29,8 @@ public class AppController {
             return;
         }
 
-        System.out.println(newMessage);
-        messages.add(newMessage);
-        messageHistory.scrollTo(messages.size());
-
         this.client.sendMessage(newMessage);
+        messageHistory.scrollTo(messages.size());
         textArea.clear();
     }
 
