@@ -51,11 +51,13 @@ public class AppController {
 
     @FXML
     public void initialize() {
+        System.out.println("Initializing AppController");
         this.client = new Client("localhost", 585);
         this.client.getMessages();
         this.messages = this.client.messages;
         this.users = FXCollections.observableArrayList("John", "Adam", "Steve");
         this.messageHistory.setItems(messages);
         this.userList.setItems(users);
+        System.out.println("AppController Initialized");
     }
 }

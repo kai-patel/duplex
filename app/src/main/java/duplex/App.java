@@ -17,16 +17,21 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
         URL fxmlLocation = new File("./src/main/java/duplex/duplex.fxml").getCanonicalFile().toURI().toURL();
-        System.out.println(fxmlLocation);
+        System.out.println("FXML Location: " + fxmlLocation);
         loader.setLocation(fxmlLocation);
         VBox vbox = loader.<VBox>load();
 
         Scene scene = new Scene(vbox);
         stage.setScene(scene);
+
+        System.out.println("Showing stage");
         stage.show();
     }
 
     public static void main(String[] args) {
+        System.out.println("Launching app!");
         launch();
+        System.out.println("App exited");
+        System.exit(0);
     }
 }

@@ -16,11 +16,16 @@ public class Client {
     public ObservableList<String> messages;
 
     public Client(String host, int port) {
+        System.out.println("Creating Client");
         this.messages = FXCollections.observableArrayList();
         try {
             this.socket = new Socket(host, port);
-            this.in = new ObjectInputStream(this.socket.getInputStream());
+            System.out.println("Created Client socket");
             this.out = new ObjectOutputStream(this.socket.getOutputStream());
+            System.out.println("Created Client out");
+            this.in = new ObjectInputStream(this.socket.getInputStream());
+            System.out.println("Created Client in");
+            System.out.println("Created client");
         } catch (IOException e) {
             System.err.println("Could not create Client");
         }
@@ -60,6 +65,7 @@ public class Client {
             public void run() {
                 while (socket.isConnected()) {
                     try {
+                        System.out.println("Reading object");
                         Message message = (Message) in.readObject();
                         System.out.println(message.toString());
                         messages.add(message.toString());
