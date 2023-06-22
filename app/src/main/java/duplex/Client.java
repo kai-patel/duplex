@@ -68,6 +68,8 @@ public class Client {
                         break;
                     }
                 }
+
+                return;
             }
         }).start();
     }
